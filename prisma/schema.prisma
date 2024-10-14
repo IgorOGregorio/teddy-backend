@@ -12,3 +12,32 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  UserUrl   UserUrl[]
+}
+
+model Url {
+  id          Int       @id @default(autoincrement())
+  url         String
+  shortUrl    String
+  accessCount Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  deletedAt   DateTime?
+  UserUrl     UserUrl[]
+}
+
+model UserUrl {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  urlId  Int
+  User   User @relation(fields: [userId], references: [id])
+  Url    Url  @relation(fields: [urlId], references: [id])
+}
