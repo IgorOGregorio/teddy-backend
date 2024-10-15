@@ -35,7 +35,7 @@ model Url {
 }
 
 model UserUrl {
-  id     Int    @id @default(autoincrement())
+  id     String @id @default(uuid())
   userId String
   urlId  String
   User   User   @relation(fields: [userId], references: [id])
