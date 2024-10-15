@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   name      String
   email     String    @unique
   password  String
@@ -24,7 +24,7 @@ model User {
 }
 
 model Url {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   url         String
   shortUrl    String
   accessCount Int       @default(0)
@@ -35,9 +35,9 @@ model Url {
 }
 
 model UserUrl {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  urlId  Int
-  User   User @relation(fields: [userId], references: [id])
-  Url    Url  @relation(fields: [urlId], references: [id])
+  id     Int    @id @default(autoincrement())
+  userId String
+  urlId  String
+  User   User   @relation(fields: [userId], references: [id])
+  Url    Url    @relation(fields: [urlId], references: [id])
 }
