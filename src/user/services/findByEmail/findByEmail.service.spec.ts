@@ -1,30 +1,13 @@
-import { Test } from '@nestjs/testing';
-import { IUserRepository } from '../../repositories/iuser.repository';
-import { UserPrismaRepository } from '../../repositories/userPrisma.repository';
-import { UserController } from '../../user.controller';
-import { CreateUserService } from '../createUser/createUser.service';
 import { FindByEmailService } from './findByEmail.service';
 import { User } from '../../entities/user.entity';
-import { PrismaService } from '../../../prisma/Prisma.service';
+import { userModuleTest } from '../../utils/userModuleTest';
 
 describe('FindByEmailService', () => {
   let findByEmailService: FindByEmailService;
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [
-        CreateUserService,
-        FindByEmailService,
-        {
-          provide: IUserRepository,
-          useClass: UserPrismaRepository,
-        },
-        PrismaService,
-      ],
-    }).compile();
-
-    findByEmailService = moduleRef.get(FindByEmailService);
+    const module = await userModuleTest();
+    findByEmailService = module.get(FindByEmailService);
   });
 
   it('should be defined', () => {

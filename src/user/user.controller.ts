@@ -13,16 +13,15 @@ import { FindByEmailService } from './services/findByEmail/findByEmail.service';
 import { User } from './entities/user.entity';
 import { FindAllService } from './services/findAll/findAll.service';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../decorators/isPublicKey.decorator';
 
 @ApiTags('User')
-@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(
@@ -48,38 +47,17 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Options',
-    example: [
-      {
-        method: 'HEAD',
-        description: 'Head',
-        route: '/user',
-      },
-      {
-        method: 'OPTIONS',
-        description: 'Options',
-        route: '/user',
-      },
-      {
-        method: 'GET',
-        description: 'Get all users',
-        route: '/user/all',
-      },
-      {
-        method: 'POST',
-        description: 'Create a user',
-        route: '/user',
-        body: {
-          email: 'string',
-          name: 'string',
-          password: 'string',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          method: { type: 'string', example: 'GET' },
+          description: { type: 'string', example: 'Get all users' },
+          route: { type: 'string', example: '/user/all' },
         },
       },
-      {
-        method: 'GET',
-        description: 'Find user by email',
-        route: '/user/email/:email',
-      },
-    ],
+    },
   })
   @ApiResponse({
     status: 404,
@@ -106,11 +84,6 @@ export class UserController {
         method: 'POST',
         description: 'Create a user',
         route: '/user',
-        body: {
-          email: 'string',
-          name: 'string',
-          password: 'string',
-        },
       },
       {
         method: 'GET',
@@ -120,39 +93,48 @@ export class UserController {
     ];
   }
 
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a user' })
   @ApiResponse({
     status: 201,
     description: 'User created',
-    example: {
-      id: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6',
-      name: 'User Name',
-      email: 'user@example.com',
-      createdAt: new Date().toLocaleString(process.env.TZ),
-      updatedAt: new Date().toLocaleString(process.env.TZ),
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6' },
+        name: { type: 'string', example: 'User Name' },
+        email: { type: 'string', example: 'user@example.com' },
+        createdAt: {
+          type: 'string',
+          example: new Date().toLocaleString(process.env.TZ),
+        },
+        updatedAt: {
+          type: 'string',
+          example: new Date().toLocaleString(process.env.TZ),
+        },
+      },
     },
   })
   @ApiResponse({
     status: 400,
     description: 'Email already exists',
-    example: {
-      message: 'Email already exists',
-      error: 'Bad Request',
-      statusCode: 400,
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: 'Email already exists' },
+        error: { type: 'string', example: 'Bad Request' },
+        statusCode: { type: 'number', example: 400 },
+      },
     },
   })
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        email: { format: 'email' },
-        name: { example: 'User Name', type: 'string' },
-        password: {
-          example: '12345678',
-          type: 'string',
-          minLength: 8,
-        },
+        email: { format: 'email', type: 'string' },
+        name: { type: 'string', example: 'User Name' },
+        password: { type: 'string', example: '12345678', minLength: 8 },
       },
     },
   })
@@ -166,22 +148,33 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'User found',
-    type: User,
-    example: {
-      id: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6',
-      name: 'User Name',
-      email: 'user@example.com',
-      createdAt: new Date().toLocaleString(process.env.TZ),
-      updatedAt: new Date().toLocaleString(process.env.TZ),
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6' },
+        name: { type: 'string', example: 'User Name' },
+        email: { type: 'string', example: 'user@example.com' },
+        createdAt: {
+          type: 'string',
+          example: new Date().toLocaleString(process.env.TZ),
+        },
+        updatedAt: {
+          type: 'string',
+          example: new Date().toLocaleString(process.env.TZ),
+        },
+      },
     },
   })
   @ApiResponse({
     status: 404,
     description: 'User not found',
-    example: {
-      message: 'User not found',
-      error: 'Not Found',
-      statusCode: 404,
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: 'User not found' },
+        error: { type: 'string', example: 'Not Found' },
+        statusCode: { type: 'number', example: 404 },
+      },
     },
   })
   @ApiParam({
@@ -201,24 +194,29 @@ export class UserController {
   @ApiOperation({ summary: 'Find all users' })
   @ApiResponse({
     status: 200,
-    description: 'User found',
-    type: User,
-    example: [
-      {
-        id: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6',
-        name: 'User Name',
-        email: 'user@example.com',
-        createdAt: new Date().toLocaleString(process.env.TZ),
-        updatedAt: new Date().toLocaleString(process.env.TZ),
+    description: 'Users found',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            example: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6',
+          },
+          name: { type: 'string', example: 'User Name' },
+          email: { type: 'string', example: 'user@example.com' },
+          createdAt: {
+            type: 'string',
+            example: new Date().toLocaleString(process.env.TZ),
+          },
+          updatedAt: {
+            type: 'string',
+            example: new Date().toLocaleString(process.env.TZ),
+          },
+        },
       },
-      {
-        id: 'h45gv9ff-fda4-4396-67gd-f965142302f6',
-        name: 'User Name 2',
-        email: 'user2@example.com',
-        createdAt: new Date().toLocaleString(process.env.TZ),
-        updatedAt: new Date().toLocaleString(process.env.TZ),
-      },
-    ],
+    },
   })
   async findAll() {
     const users: User[] = await this.findAllService.execute();
