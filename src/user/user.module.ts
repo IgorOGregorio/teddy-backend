@@ -17,5 +17,6 @@ import { FindAllService } from './services/findAll/findAll.service';
     },
     FindAllService,
   ],
+  exports: [FindByEmailService],
 })
 export class UserModule {}

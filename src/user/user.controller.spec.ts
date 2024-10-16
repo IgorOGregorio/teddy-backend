@@ -1,12 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { PrismaService } from '../prisma/Prisma.service';
-import { IUserRepository } from './repositories/iuser.repository';
-import { UserPrismaRepository } from './repositories/userPrisma.repository';
 import { CreateUserService } from './services/createUser/createUser.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { FindByEmailService } from './services/findByEmail/findByEmail.service';
+import { userModuleTest } from './utils/userModuleTest';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -14,18 +11,7 @@ describe('UserController', () => {
   let findByEmailService: FindByEmailService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [
-        CreateUserService,
-        FindByEmailService,
-        {
-          provide: IUserRepository,
-          useClass: UserPrismaRepository,
-        },
-        PrismaService,
-      ],
-    }).compile();
+    const module = await userModuleTest();
 
     userController = module.get(UserController);
     createUserService = module.get(CreateUserService);
