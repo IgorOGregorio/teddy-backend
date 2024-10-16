@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwtAuth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth/services/auth.service';
+import { UrlModule } from './url/url.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule, JwtModule],
+  imports: [PrismaModule, UserModule, AuthModule, JwtModule, UrlModule],
   providers: [
     {
       provide: APP_PIPE,
