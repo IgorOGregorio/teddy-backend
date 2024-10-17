@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { FindUrlsByUserIdService } from './services/findUrlsByUserId/findUrlsByUserId.service';
 import { UpdateUrlService } from './services/updateUrl/updateUrl.service';
 import { DeleteUrlService } from './services/deleteUrl/deleteUrl.service';
+import { RedirectUrlService } from './services/redirectUrl/redirectUrl.service';
 
 @Module({
   imports: [UserModule, JwtModule],
@@ -21,9 +22,11 @@ import { DeleteUrlService } from './services/deleteUrl/deleteUrl.service';
     },
     UpdateUrlService,
     DeleteUrlService,
+    RedirectUrlService,
   ],
   exports: [
     FindUrlsByUserIdService,
+    RedirectUrlService,
     {
       provide: IUrlRepository,
       useClass: UrlPrismaRepository,

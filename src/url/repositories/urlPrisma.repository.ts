@@ -2,11 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { IUrlRepository } from './iUrl.repository';
 import { Url } from '../entities/url.entity';
 import { PrismaService } from '../../prisma/Prisma.service';
-import { UpdateUrlDto } from '../dto/update-url.dto';
 
 @Injectable()
 export class UrlPrismaRepository implements IUrlRepository {
   constructor(private prismaService: PrismaService) {}
+
+  async findUrlById(id: string): Promise<Url | null> {
+    try {
+      const url = await this.prismaService.url.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!url) return null;
+
+      return new Url(
+        {
+          url: url.url,
+          shortUrl: url.shortUrl,
+          accessCount: url.accessCount,
+          createdAt: url.createdAt,
+          updatedAt: url.updatedAt,
+          deletedAt: url.deletedAt,
+        },
+        url.id,
+      );
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async findBySortUrl(shortUrl: string): Promise<Url | null> {
     try {
       const url = await this.prismaService.url.findUnique({
@@ -106,7 +132,7 @@ export class UrlPrismaRepository implements IUrlRepository {
     }
   }
 
-  async updateUrl(id: string, data: UpdateUrlDto): Promise<Url> {
+  async updateUrl(id: string, data: Partial<Url>): Promise<Url> {
     try {
       const url = await this.prismaService.url.update({
         data,
@@ -158,25 +184,6 @@ export class UrlPrismaRepository implements IUrlRepository {
           id: urlId,
         },
       });
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  async verifyUrlIsDeleted(urlId: string): Promise<boolean> {
-    try {
-      const url = await this.prismaService.url.findUnique({
-        where: {
-          id: urlId,
-          deletedAt: {
-            not: null,
-          },
-        },
-      });
-
-      if (!url) return false;
-
-      return true;
     } catch (error) {
       throw new Error(error.message);
     }

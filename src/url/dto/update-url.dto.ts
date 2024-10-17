@@ -1,10 +1,8 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUrlDto } from './create-url.dto';
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsUrl, IsString, IsNotEmpty } from 'class-validator';
 
-export class UpdateUrlDto extends PartialType(CreateUrlDto) {
+export class UpdateUrlDto {
   @IsString()
-  @IsNotEmpty()
   @IsUrl()
+  @IsNotEmpty()
   url: string;
 }

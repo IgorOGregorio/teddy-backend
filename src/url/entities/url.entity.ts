@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 export interface urlProps {
   url: string;
   shortUrl: string;
@@ -41,18 +43,21 @@ export class Url {
   }
 
   updateUrl(url: string) {
-    if (this.props.deletedAt) throw new Error('Cannot update a deleted URL');
+    if (this.props.deletedAt)
+      throw new BadRequestException('Cannot update a deleted URL');
 
     this.props.url = url;
   }
 
   incrementAccessCount() {
-    if (this.props.deletedAt) throw new Error('Cannot update a deleted URL');
+    if (this.props.deletedAt)
+      throw new BadRequestException('Cannot update a deleted URL');
     this.props.accessCount += 1;
   }
 
   delete() {
-    if (this.props.deletedAt) throw new Error('URL already deleted');
+    if (this.props.deletedAt)
+      throw new BadRequestException('URL already deleted');
     this.props.deletedAt = new Date();
   }
 

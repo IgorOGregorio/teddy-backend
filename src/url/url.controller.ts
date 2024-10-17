@@ -6,6 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  Headers,
+  Head,
+  Options,
 } from '@nestjs/common';
 import { CreateUrlService } from './services/createUrl/createUrl.service';
 import { CreateUrlDto } from './dto/create-url.dto';
@@ -16,8 +19,8 @@ import { GetUser } from '../decorators/user.decorator';
 import { AuthPayload } from '../auth/jwt.strategy';
 import { FindUrlsByUserIdService } from './services/findUrlsByUserId/findUrlsByUserId.service';
 import { UpdateUrlService } from './services/updateUrl/updateUrl.service';
-import { UpdateUrlDto } from './dto/update-url.dto';
 import { DeleteUrlService } from './services/deleteUrl/deleteUrl.service';
+import { UpdateUrlDto } from './dto/update-url.dto';
 
 @ApiTags('Url')
 @Controller('url')
@@ -29,6 +32,83 @@ export class UrlController {
     private readonly updateUrlService: UpdateUrlService,
     private readonly deleteUrlService: DeleteUrlService,
   ) {}
+
+  @Head()
+  @ApiOperation({ summary: 'Verify status' })
+  @ApiResponse({
+    status: 200,
+    description: 'Url exists',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Url not found',
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: 'Url not found' },
+        error: { type: 'string', example: 'Not Found' },
+        statusCode: { type: 'number', example: 404 },
+      },
+    },
+  })
+  async checkUrl() {
+    return;
+  }
+
+  @Options()
+  @ApiOperation({ summary: 'Get all available routes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          method: { type: 'string', example: 'GET' },
+          description: {
+            type: 'string',
+            example: 'List urls from an user',
+          },
+          route: { type: 'string', example: '/url/user' },
+        },
+      },
+    },
+  })
+  getAllRoutes() {
+    return [
+      {
+        method: 'HEAD',
+        description: 'Head',
+        route: '/url',
+      },
+      {
+        method: 'OPTIONS',
+        description: 'Options',
+        route: '/url',
+      },
+      {
+        method: 'POST',
+        description: 'Create an url with user or not',
+        route: '/url',
+      },
+      {
+        method: 'GET',
+        description: 'List urls from an user',
+        route: '/url/user',
+      },
+      {
+        method: 'PATCH',
+        description: 'Update an url',
+        route: '/url/:id',
+      },
+      {
+        method: 'DELETE',
+        description: 'Delete an url',
+        route: '/url/:id',
+      },
+    ];
+  }
 
   @Public()
   @Post()
@@ -92,9 +172,21 @@ export class UrlController {
       },
     },
   })
-  create(@GetUser() user: AuthPayload, @Body() createUrlDto: CreateUrlDto) {
-    console.log(user);
-    return this.createUrlService.execute(createUrlDto, user ? user.id : null);
+  async create(
+    @Body() createUrlDto: CreateUrlDto,
+    @Headers() headers?,
+    @GetUser() user?: AuthPayload,
+  ) {
+    const url = await this.createUrlService.execute(
+      createUrlDto,
+      user ? user.id : null,
+    );
+
+    return {
+      id: url.id,
+      ...url.props,
+      shortUrl: `${headers ? headers.host : 'http://localhost:3000'}/${url.shortUrl}`,
+    };
   }
 
   @Get('user')
@@ -152,8 +244,17 @@ export class UrlController {
       },
     },
   })
-  findUrlsByUser(@GetUser() user: AuthPayload) {
-    return this.findUrlsByUserId.execute(user.id);
+  async findUrlsByUser(@GetUser() user: AuthPayload, @Headers() headers?) {
+    const urls = await this.findUrlsByUserId.execute(user.id);
+    console.log(headers);
+
+    return urls.map((url) => {
+      return {
+        id: url.id,
+        ...url.props,
+        shortUrl: `${headers ? headers.host : 'http://localhost:3000'}/${url.shortUrl}`,
+      };
+    });
   }
 
   @Patch(':id')
@@ -209,12 +310,12 @@ export class UrlController {
       },
     },
   })
-  updateUrl(
+  async updateUrl(
+    @Body() updateUrlDto: UpdateUrlDto,
     @GetUser() user: AuthPayload,
     @Param('id') urlId: string,
-    @Body() data: UpdateUrlDto,
   ) {
-    return this.updateUrlService.execute(urlId, data, user.id);
+    return await this.updateUrlService.execute(urlId, updateUrlDto, user.id);
   }
 
   @Delete(':id')

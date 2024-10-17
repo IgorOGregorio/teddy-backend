@@ -8,10 +8,9 @@ export class UpdateUrlService {
   ) {}
 
   async execute(id: string, data: any, userId: string) {
-    //validate if url is not deleted
-    const urlIsDeleted = await this.urlRepository.verifyUrlIsDeleted(id);
+    const url = await this.urlRepository.findUrlById(id);
 
-    if (urlIsDeleted) throw new BadRequestException('Url is deleted');
+    if (!url) throw new BadRequestException('Url not found');
 
     //validade if user owns the url
     const userOwnsUrl = await this.urlRepository.validateUserOwnsUrl(
@@ -23,6 +22,10 @@ export class UpdateUrlService {
       throw new BadRequestException('User does not own the url');
     }
 
-    return this.urlRepository.updateUrl(id, data);
+    url.updateUrl(data.url);
+
+    return this.urlRepository.updateUrl(id, {
+      url: url.url,
+    });
   }
 }
