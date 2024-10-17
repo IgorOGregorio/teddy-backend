@@ -10,12 +10,12 @@ export class CreateUserService {
   ) {}
   async execute(createUserDto: CreateUserDto): Promise<User> {
     //validate email
-    const findedUserByEmail = await this.userRepository.findByEmail(
+    const findedUserById = await this.userRepository.findById(
       createUserDto.email,
     );
 
     //if email already exists
-    if (findedUserByEmail) {
+    if (findedUserById) {
       throw new BadRequestException('Email already exists');
     }
 

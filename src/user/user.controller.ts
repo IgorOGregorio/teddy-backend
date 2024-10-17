@@ -1,24 +1,10 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  Head,
-  Options,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Head, Options } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CreateUserService } from './services/createUser/createUser.service';
-import { FindByEmailService } from './services/findByEmail/findByEmail.service';
+import { FindByIdService } from './services/findById/findById.service';
 import { User } from './entities/user.entity';
 import { FindAllService } from './services/findAll/findAll.service';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../decorators/isPublicKey.decorator';
 
 @ApiTags('User')
@@ -26,7 +12,7 @@ import { Public } from '../decorators/isPublicKey.decorator';
 export class UserController {
   constructor(
     private readonly createUserService: CreateUserService,
-    private readonly findByEmailService: FindByEmailService,
+    private readonly findByIdService: FindByIdService,
     private readonly findAllService: FindAllService,
   ) {}
 
@@ -140,53 +126,6 @@ export class UserController {
   })
   async create(@Body() createUserDto: CreateUserDto) {
     const user: User = await this.createUserService.execute(createUserDto);
-    return user.toJson();
-  }
-
-  @Get('email/:email')
-  @ApiOperation({ summary: 'Find one user by email' })
-  @ApiResponse({
-    status: 200,
-    description: 'User found',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', example: 'f3ebc9ff-fda4-4396-8bd9-f965142302f6' },
-        name: { type: 'string', example: 'User Name' },
-        email: { type: 'string', example: 'user@example.com' },
-        createdAt: {
-          type: 'string',
-          example: new Date().toLocaleString(process.env.TZ),
-        },
-        updatedAt: {
-          type: 'string',
-          example: new Date().toLocaleString(process.env.TZ),
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'User not found',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', example: 'User not found' },
-        error: { type: 'string', example: 'Not Found' },
-        statusCode: { type: 'number', example: 404 },
-      },
-    },
-  })
-  @ApiParam({
-    name: 'email',
-    format: 'email',
-    required: true,
-    type: 'string',
-    description: 'User email',
-    example: 'user@example.com',
-  })
-  async findByEmail(@Param('email') email: string) {
-    const user: User = await this.findByEmailService.execute(email);
     return user.toJson();
   }
 

@@ -1,10 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from './pipes/validation.pipe';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+
+  // app.enableCors({
+  //   origin: '*',
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  // });
+
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .addBearerAuth()
@@ -16,12 +30,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.useGlobalPipes(new ValidationPipe());
-
-  await app.listen(process.env.PORT || 3000, () => {
-    console.log(
-      `Server is running ${process.env.NODE_ENV} mode on ${process.env.PORT || 3000} port`,
-    );
-  });
+  await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();

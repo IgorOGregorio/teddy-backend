@@ -26,7 +26,7 @@ model User {
 model Url {
   id          String    @id @default(uuid())
   url         String
-  shortUrl    String
+  shortUrl    String    @unique
   accessCount Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
@@ -37,7 +37,7 @@ model Url {
 model UserUrl {
   id     String @id @default(uuid())
   userId String
-  urlId  String
+  urlId  String @unique
   User   User   @relation(fields: [userId], references: [id])
   Url    Url    @relation(fields: [urlId], references: [id])
 }

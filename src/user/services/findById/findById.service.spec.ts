@@ -1,13 +1,13 @@
-import { FindByEmailService } from './findByEmail.service';
+import { FindByIdService } from './findById.service';
 import { User } from '../../entities/user.entity';
 import { userModuleTest } from '../../utils/userModuleTest';
 
 describe('FindByEmailService', () => {
-  let findByEmailService: FindByEmailService;
+  let findByEmailService: FindByIdService;
 
   beforeEach(async () => {
     const module = await userModuleTest();
-    findByEmailService = module.get(FindByEmailService);
+    findByEmailService = module.get(FindByIdService);
   });
 
   it('should be defined', () => {

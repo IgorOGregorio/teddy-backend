@@ -2,20 +2,17 @@ import { UserController } from './user.controller';
 import { CreateUserService } from './services/createUser/createUser.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { FindByEmailService } from './services/findByEmail/findByEmail.service';
 import { userModuleTest } from './utils/userModuleTest';
 
 describe('UserController', () => {
   let userController: UserController;
   let createUserService: CreateUserService;
-  let findByEmailService: FindByEmailService;
 
   beforeEach(async () => {
     const module = await userModuleTest();
 
     userController = module.get(UserController);
     createUserService = module.get(CreateUserService);
-    findByEmailService = module.get(FindByEmailService);
   });
 
   it('should be defined', () => {
@@ -43,21 +40,21 @@ describe('UserController', () => {
     );
   });
 
-  it('should find an user by email', async () => {
-    const result = new User({
-      name: 'test',
-      email: 'test@email.com',
-      password: 'test',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+  // it('should find an user by email', async () => {
+  //   const result = new User({
+  //     name: 'test',
+  //     email: 'test@email.com',
+  //     password: 'test',
+  //     createdAt: new Date(),
+  //     updatedAt: new Date(),
+  //   });
 
-    jest
-      .spyOn(findByEmailService, 'execute')
-      .mockImplementation(async () => result);
+  //   jest
+  //     .spyOn(findByEmailService, 'execute')
+  //     .mockImplementation(async () => result);
 
-    expect(await userController.findByEmail(result.email)).toStrictEqual(
-      result.toJson(),
-    );
-  });
+  //   expect(await userController.findByEmail(result.email)).toStrictEqual(
+  //     result.toJson(),
+  //   );
+  // });
 });

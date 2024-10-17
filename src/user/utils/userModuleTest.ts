@@ -4,7 +4,7 @@ import { IUserRepository } from '../repositories/iuser.repository';
 import { UserPrismaRepository } from '../repositories/userPrisma.repository';
 import { CreateUserService } from '../services/createUser/createUser.service';
 import { FindAllService } from '../services/findAll/findAll.service';
-import { FindByEmailService } from '../services/findByEmail/findByEmail.service';
+import { FindByIdService } from '../services/findById/findById.service';
 import { UserController } from '../user.controller';
 
 export async function userModuleTest(): Promise<TestingModule> {
@@ -12,7 +12,7 @@ export async function userModuleTest(): Promise<TestingModule> {
     controllers: [UserController],
     providers: [
       CreateUserService,
-      FindByEmailService,
+      FindByIdService,
       {
         provide: IUserRepository,
         useClass: UserPrismaRepository,
@@ -20,6 +20,6 @@ export async function userModuleTest(): Promise<TestingModule> {
       FindAllService,
       PrismaService,
     ],
-    exports: [FindByEmailService],
+    exports: [FindByIdService],
   }).compile();
 }
