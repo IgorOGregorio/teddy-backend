@@ -2,7 +2,7 @@ import { UserController } from './user.controller';
 import { CreateUserService } from './services/createUser/createUser.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { FindByEmailService } from './services/findByEmail/findByEmail.service';
+import { FindByEmailService } from './services/findById/findById.service';
 import { userModuleTest } from './utils/userModuleTest';
 
 describe('UserController', () => {

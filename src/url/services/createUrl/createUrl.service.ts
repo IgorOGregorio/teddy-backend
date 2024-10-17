@@ -2,20 +2,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Url, urlProps } from '../../entities/url.entity';
 import { CreateUrlDto } from '../../dto/create-url.dto';
 import { IUrlRepository } from '../../repositories/iUrl.repository';
-import { FindByEmailService } from '../../../user/services/findByEmail/findByEmail.service';
+import { FindByIdService } from '../../../user/services/findById/findById.service';
 
 @Injectable()
 export class CreateUrlService {
   constructor(
     @Inject(IUrlRepository) private readonly urlRepository: IUrlRepository,
-    private readonly findUserByEmailService: FindByEmailService,
+    private readonly findUserByIdService: FindByIdService,
   ) {}
-  async execute(createUrlDto: CreateUrlDto, email?: string): Promise<Url> {
-    //verify if email is provided and user exists
+  async execute(createUrlDto: CreateUrlDto, id?: string): Promise<Url> {
+    //verify if user exists else throw error
     let user;
-    if (email) {
-      user = await this.findUserByEmailService.execute(email);
-    }
+    if (id) user = await this.findUserByIdService.execute(id);
 
     //create short url
     const shortUrl = await this.createUniqueShortUrl();
