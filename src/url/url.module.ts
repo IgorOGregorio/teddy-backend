@@ -6,6 +6,8 @@ import { UrlPrismaRepository } from './repositories/urlPrisma.repository';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { FindUrlsByUserIdService } from './services/findUrlsByUserId/findUrlsByUserId.service';
+import { UpdateUrlService } from './services/updateUrl/updateUrl.service';
+import { DeleteUrlService } from './services/deleteUrl/deleteUrl.service';
 
 @Module({
   imports: [UserModule, JwtModule],
@@ -17,6 +19,8 @@ import { FindUrlsByUserIdService } from './services/findUrlsByUserId/findUrlsByU
       provide: IUrlRepository,
       useClass: UrlPrismaRepository,
     },
+    UpdateUrlService,
+    DeleteUrlService,
   ],
   exports: [
     FindUrlsByUserIdService,
