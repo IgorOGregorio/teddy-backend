@@ -5,6 +5,7 @@ import { IUserRepository } from './repositories/iuser.repository';
 import { UserPrismaRepository } from './repositories/userPrisma.repository';
 import { FindByEmailService } from './services/findByEmail/findByEmail.service';
 import { FindAllService } from './services/findAll/findAll.service';
+import { PrismaService } from '../prisma/Prisma.service';
 
 @Module({
   controllers: [UserController],
@@ -16,6 +17,7 @@ import { FindAllService } from './services/findAll/findAll.service';
       useClass: UserPrismaRepository,
     },
     FindAllService,
+    PrismaService,
   ],
   exports: [FindByEmailService],
 })
