@@ -21,9 +21,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        restart: true
+        # restart: true
     ports:
-      - '3000:3000'
+      - '3944:3944'
     env_file:
       - .deployment.env
     volumes:
