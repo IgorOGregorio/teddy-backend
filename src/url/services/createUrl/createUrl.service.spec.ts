@@ -1,27 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUrlService } from './createUrl.service';
-import { IUrlRepository } from '../../repositories/iUrl.repository';
-import { UrlPrismaRepository } from '../../repositories/urlPrisma.repository';
-import { UrlController } from '../../url.controller';
-import { PrismaService } from '../../../prisma/Prisma.service';
-import { UserModule } from '../../../user/user.module';
+import { urlModuleTest } from '../../utils/urlModuleTest';
 
 describe('CreateUrlService', () => {
   let service: CreateUrlService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [UserModule],
-      controllers: [UrlController],
-      providers: [
-        CreateUrlService,
-        {
-          provide: IUrlRepository,
-          useClass: UrlPrismaRepository,
-        },
-        PrismaService,
-      ],
-    }).compile();
+    const module = await urlModuleTest();
 
     service = module.get<CreateUrlService>(CreateUrlService);
   });
@@ -31,10 +15,7 @@ describe('CreateUrlService', () => {
   });
 
   it('should create a url', async () => {
-    const url = await service.execute(
-      { url: 'https://www.google.com' },
-      'user@example.com',
-    );
+    const url = await service.execute({ url: 'https://www.google.com' });
 
     expect(url.id).toBeDefined();
     expect(url.url).toBe('https://www.google.com');
