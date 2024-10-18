@@ -3,7 +3,7 @@ import { Public } from './decorators/isPublicKey.decorator';
 import { RedirectUrlService } from './url/services/redirectUrl/redirectUrl.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Redirect')
+@ApiTags('Redirect URL')
 @Controller('')
 export class AppController {
   constructor(private readonly redirectUrlService: RedirectUrlService) {}
