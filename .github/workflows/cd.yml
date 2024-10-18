@@ -31,7 +31,5 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd /var/www/teddy-backend
-            git pull https://github.com/IgorOGregorio/teddy-backend.git main
-            npm run build
-            npm run test
+            git pull https://${{ secrets.GIT_USER }}:${{ secrets.GIT_TOKEN }}@github.com/IgorOGregorio/teddy-backend.git main
             docker compose up -d --no-deps --build teddy_backend_api
