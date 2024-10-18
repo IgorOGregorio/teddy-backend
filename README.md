@@ -19,10 +19,19 @@ Para iniciar o projeto em modo de desenvolvimento, siga os seguintes passos:
      docker-compose -f docker-compose.dev.yml up --build -d
 3. Para verificar os logs e o status dos containers, utilize:
     ```bash
-         docker-compose logs -f
+    docker-compose logs -f
 4. Para parar os containers:
     ```bash
-         docker-compose down
+    docker-compose down
+5. O projeto executa em http://localhost:3000
 
+## Projeto em produção
 
+Acesse [Swagger](http://85.31.62.16:3944/api#/)
+
+## Próximas features
+
+1. Na contabilidade de acessos da URL, utilizar filas para garantir a contagem correta em acessos simultaneos. Intuito é utilizar BullMQ para gerenciamentos dos jobs inseridos nas filas e REDIS para armazenar em memória os jobs a serem realizados.
+2. Ferramentas de monitoramento como Prometheus
+3. Otimizar CI/CD pipelines para testes.
 
