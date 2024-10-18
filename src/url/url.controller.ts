@@ -246,7 +246,7 @@ export class UrlController {
   })
   async findUrlsByUser(@GetUser() user: AuthPayload, @Headers() headers?) {
     const urls = await this.findUrlsByUserId.execute(user.id);
-    console.log(headers);
+    // console.log(headers);
 
     return urls.map((url) => {
       return {
